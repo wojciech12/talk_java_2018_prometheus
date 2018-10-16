@@ -152,7 +152,7 @@ public class Application {
   }
 
   public static void main(String[] args) throws Exception {
-    prepareCollectors("user");
+    prepareCollectors("order");
     SpringApplication.run(Application.class, args);    
   }
 
