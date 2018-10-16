@@ -38,11 +38,11 @@
 		<div class="reveal">
 			<div class="slides">
 				<section>
-					<h3 style="text-transform: none !important;">How to monitor your micro-service with Prometheus?<br />How to design the metrics?</h1>
-
+					<h3 style="text-transform: none !important;">How to monitor your micro-service<br />with Prometheus?</h1>
+						<!-- <br />How to design the metrics? -->
 					<img src="img/logo_prometheus.png" width="40%" />
 
-					<h6><small>Wojciech Barczyński - SMACC.io | 17 October 2018</small></h6>
+					<h6><small>W<span style="text-transform: lowercase;">ojciech</span> B<span style="text-transform: lowercase;">arczyński</span> - SMACC.<span style="text-transform: lowercase;">io</span> | <a href="https://www.linkedin.com/in/wojciechbarczynski/">LI</a> | <a href="https://twitter.com/wbarczynski">T<span style="text-transform: lowercase;">witter</span></a> | 16 O<span style="text-transform: lowercase;">ctober</span> 2018</small></h6>
 				</section>
 
 				<section>
@@ -50,12 +50,35 @@
 
 					<p>
 					<ul>
-						<li>Lead Software Developer - SMACC (FinTech/AI)</li>
-						<li>Before:<br />System Engineer i Developer Lyke</li>
-						<li>Before:<br />1000+ nodes, 20 data centers with Openstack</li>
+						<li>Lead Software Developer- SMACC (FinTech/AI)</li>
+						<li>Before:<br />System Engineer && Developer Lyke</li>
+						<li>Looking:<br />Tools for efficent and :) teams</li>
 						<!-- li>System Engineer background</li -->
-						<li>Point of view:<br />Startups, fast-moving environment</li>
 						<!-- li>Hobby:<br />teaching software engineering</li -->
+					</ul></p>
+				</section>
+
+				<section>
+					<h3>Point of view</h3>
+
+					<p>
+						<ul>
+							<li>Software Developer</li>
+							<li>startups && fast-moving environment</li>
+							<li>Infra and platform should just work</li>
+						</ul>
+					</p>
+				</section>
+
+				<section>
+					<h3>My Goal</h3>
+
+					<p>
+					<ul>
+						<li>Start with monitoring</li>
+						<li>Metrics? Start with Up/Down -> USE || RED</li>
+						<li>Drop-in solution - Prometheus</li>
+						<li>How to start? With this demo app</li>
 					</ul></p>
 				</section>
 
@@ -141,10 +164,10 @@
 				<section>
 					<h3>Centralized Logging</h3>
 					<ul>
+						<li>Like a debugging vs testing</li>
 						<li>Usually much too late</li>
 						<li>Post-mortem</li>
 						<li>Hard to find the needle</li>
-						<li>Like a debugging vs testing</li>
 					</ul>
 				</section>
 
@@ -381,13 +404,15 @@ Not recommended for:
 
 				<section data-markdown>
 					<script type="text/template">
-					## Prometheus
+## Prometheus
 
-					- Wide support for languages
-					- Metrics collected over HTTP <a href="http://127.0.0.1:8080/metrics">*metrics/*</a>
-					- Pull model (see *scrape time*), push-mode possible
-					- integration with k8s
-					- PromQL
+- Wide support for languages
+- Metrics collected over HTTP <a href="http://127.0.0.1:8080/metrics">*metrics/*</a>
+- Pull model [1]
+- integration with k8s
+- PromQL
+
+<p><small>[1] See *scrape time*, push-mode possible</small></p>
 					</script>
 				</section>
 
@@ -395,20 +420,20 @@ Not recommended for:
 					<script type="text/template" width="100%">
 ### Metrics in plain text
 
-	# HELP order_mgmt_audit_duration_seconds Multiprocess metric
-	# TYPE order_mgmt_audit_duration_seconds summary
-	order_mgmt_audit_duration_seconds_count{status_code="200"} 41.0
-	order_mgmt_audit_duration_seconds_sum{status_code="200"} 27.445735454559326
-	order_mgmt_audit_duration_seconds_count{status_code="500"} 1.0
-	order_mgmt_audit_duration_seconds_sum{status_code="500"} 0.7166361808776855
-	# HELP order_mgmt_duration_seconds Multiprocess metric
-	# TYPE order_mgmt_duration_seconds summary
-	order_mgmt_duration_seconds_count{method="GET",path="/complex",status_code="200"} 41.0
-	order_mgmt_duration_seconds_sum{method="GET",path="/complex",status_code="200"} 47.53411388397217
-	order_mgmt_duration_seconds_count{method="GET",path="/",status_code="404"} 1.0
-	order_mgmt_duration_seconds_sum{method="GET",path="/",status_code="404"} 0.029236555099487305
-	order_mgmt_duration_seconds_count{method="GET",path="/complex",status_code="503"} 1.0
-	order_mgmt_duration_seconds_sum{method="GET",path="/complex",status_code="503"} 1.6936163902282715
+<pre><code data-trim="" width="100%"># HELP order_mgmt_audit_duration_seconds Multiprocess metric
+# TYPE order_mgmt_audit_duration_seconds summary
+order_mgmt_audit_duration_seconds_count{status_code="200"} 41.0
+order_mgmt_audit_duration_seconds_sum{status_code="200"} 27.445735454559326
+order_mgmt_audit_duration_seconds_count{status_code="500"} 1.0
+order_mgmt_audit_duration_seconds_sum{status_code="500"} 0.7166361808776855
+# HELP order_mgmt_duration_seconds Multiprocess metric
+# TYPE order_mgmt_duration_seconds summary
+order_mgmt_duration_seconds_count{method="GET",path="/complex",status_code="200"} 41.0
+order_mgmt_duration_seconds_sum{method="GET",path="/complex",status_code="200"} 47.53411388397217
+order_mgmt_duration_seconds_count{method="GET",path="/",status_code="404"} 1.0
+order_mgmt_duration_seconds_sum{method="GET",path="/",status_code="404"} 0.029236555099487305
+order_mgmt_duration_seconds_count{method="GET",path="/complex",status_code="503"} 1.0
+order_mgmt_duration_seconds_sum{method="GET",path="/complex",status_code="503"} 1.6936163902282715</code></pre>
 
 					</script>
 				</section>
@@ -417,16 +442,15 @@ Not recommended for:
 					<script type="text/template">
 ### Metrics in plain text
 
-	# HELP go_gc_duration_seconds A summary of the GC invocation durations.
-	# TYPE go_gc_duration_seconds summary
-	go_gc_duration_seconds{quantile="0"} 9.01e-05
-	go_gc_duration_seconds{quantile="0.25"} 0.000141101
-	go_gc_duration_seconds{quantile="0.5"} 0.000178902
-	go_gc_duration_seconds{quantile="0.75"} 0.000226903
-	go_gc_duration_seconds{quantile="1"} 0.006099658
-	go_gc_duration_seconds_sum 18.749046756
-	go_gc_duration_seconds_count 89273
-
+<pre><code data-trim="" width="100%"># HELP go_gc_duration_seconds A summary of the GC invocation durations.
+# TYPE go_gc_duration_seconds summary
+go_gc_duration_seconds{quantile="0"} 9.01e-05
+go_gc_duration_seconds{quantile="0.25"} 0.000141101
+go_gc_duration_seconds{quantile="0.5"} 0.000178902
+go_gc_duration_seconds{quantile="0.75"} 0.000226903
+go_gc_duration_seconds{quantile="1"} 0.006099658
+go_gc_duration_seconds_sum 18.749046756
+go_gc_duration_seconds_count 89273</code></pre>
 				</script>
 			</section>
 
