@@ -1,0 +1,17 @@
+*/.venv
+*/__pycache__/
+*/prometheus/data/
+demo/grafana/data/
+demo/multiproc-tmp/
+demo/alertmanager/data/
+demo/.gradle/*
+demo/build/*
+demo/demo.iml
+demo/demo.ipr
+demo/demo.iws
+demo/out
+demo/bin
+*/.classpath
+*/.project
+*/.settings/
+src
