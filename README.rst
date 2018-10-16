@@ -7,7 +7,7 @@ How to monitor your micro-service with Prometheus? How to design metrics, what i
 Slides and live-coding demo from `Warsaw Java User Group Meetup <https://www.meetup.com/Warszawa-JUG/events/255428108/>`_ in Warsaw:
 
 - `in pdf <slides/index.pdf>`_ (source: `slides/ <slides/>`_)
-- `LinkedIN Slideshare TBD </>`_
+- `LinkedIN Slideshare <https://www.slideshare.net/WojciechBarczyski/monitor-your-java-application-with-prometheus-stack/>`_
 - src/ - an example REST application monitored with Prometheus, Alertmanager, and Grafana. See `demo/README.rst <demo/README.rst>`_. All easy to run with `docker-compose <demo/docker-compose.yaml>`_ 
 
 The live-demo consists of a Spring 1.5 application and configured prometheus with grafana and alertmanager. To make it event easier, a request generator will let you stress the monitored endpoints with random errors and latency injections. Check the READMEs.
