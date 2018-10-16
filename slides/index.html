@@ -66,6 +66,7 @@
 							<li>Software Developer</li>
 							<li>startups && fast-moving environment</li>
 							<li>Infra and platform should just work</li>
+							<li>Infra and platform ~ invisible</li>
 						</ul>
 					</p>
 				</section>
@@ -406,13 +407,15 @@ Not recommended for:
 					<script type="text/template">
 ## Prometheus
 
+- Plain text
+- Metrics collected over HTTP <a href="http://127.0.0.1:8080/prometheus">*metrics/*[1]</a>
+- Pull model [2]
 - Wide support for languages
-- Metrics collected over HTTP <a href="http://127.0.0.1:8080/metrics">*metrics/*</a>
-- Pull model [1]
-- integration with k8s
 - PromQL
+- Integration with Kubernetes, Traefik, ...
 
-<p><small>[1] See *scrape time*, push-mode possible</small></p>
+<p><small>[1] most commmon, <i>prometheus</i> in Spring 1.5</small><br />
+<small>[2] See *scrape time*, push-mode possible</small></p>
 					</script>
 				</section>
 
@@ -461,21 +464,13 @@ go_gc_duration_seconds_count 89273</code></pre>
 - Mongodb
 - Mysql
 - Postgresql
-- rabbitmq
+- Rabbitmq
 - ...
 - also Blackbox exporter
 
-<p><small>examples: <a href="https://github.com/skarab7/kubernetes-memcached">memcached</a>, [psql](https://github.com/justwatchcom/sql_exporter)</small></p>
+<p><small>Examples: <a href="https://github.com/skarab7/kubernetes-memcached">memcached</a>, [psql](https://github.com/justwatchcom/sql_exporter)</small></p>
 				</script>
 			</section>
-
-
-				<section>
-					<h3>Cloud-native projects integration</h3>
-					<img src="img/traefik_architecture.svg" width="80%"/>
-					<small>  - --web.metrics.prometheus</small>
-				</section>
-
 
 				<section data-markdown>
 					<script type="text/template">
@@ -517,6 +512,12 @@ Alarming:
 					<!-- "https://pracucci.com/prometheus-understanding-the-delays-on-alerting.html -->
 					<!-- https://prometheus.io/docs/prometheus/latest/querying/functions/#holt_winters() -->
 				</section>
+
+								<section>
+									<h3>Cloud-native projects integration</h3>
+									<img src="img/traefik_architecture.svg" width="80%"/>
+									<small>  - --web.metrics.prometheus</small>
+								</section>
 
 				<!--
 				-->
@@ -710,8 +711,8 @@ Best practises on <a target="_blank" href="https://prometheus.io/docs/practices/
 					<script type="text/template">
 					#### Demo:
 
-- <a target="_blank" href="http://127.0.0.1:8080/metrics/">http://127.0.0.1:8080</a> - service
-- <a target="_blank" href="http://127.0.0.1:8080/metrics/">http://127.0.0.1:8080/metrics/</a>
+- <a target="_blank" href="http://127.0.0.1:8080/hello">http://127.0.0.1:8080/hello</a> - service
+- <a target="_blank" href="http://127.0.0.1:8080/prometheus/">http://127.0.0.1:8080/prometheus/</a>
 - <a target="_blank" href="http://127.0.0.1:9090">http://127.0.0.1:9090</a> - prometheus
 - <a target="_blank" href="http://127.0.0.1:3000">http://127.0.0.1:3000</a> - grafana
 - <a target="_blank" href="http://127.0.0.1:9093">http://127.0.0.1:9093</a> - alertmanager
@@ -808,13 +809,13 @@ ea0d9233e159        prom/alertmanager:v0.15.1  0.0.0.0:9093->9093/tcp   java-pro
 					<img src="img/demo/github.png"  width="70%"  />
 				</section>
 
-				<section data-markdown>
+				<!-- section data-markdown>
 					<script type="text/template">
 ### Demo: Java Code
 
 - Metric Definition
 					</script>
-				</section>
+				</section -->
 
 				<!-- section data-markdown>
 					<script type="text/template">
@@ -850,12 +851,13 @@ make srv_wrk_random</code></pre>
 
 				<section data-markdown>
 					<script type="text/template">
-						### Demo: Prom Stack
+### Demo
 
-						- Prometheus dashboard and config
-						- AlertManager dashboard and config
-						- Simulate the successful and failed calls
-						- Simple Queries for rate
+Everything Included:
+- Prometheus dashboard and config
+- AlertManager dashboard and config
+- Simulate the successful and failed calls
+- Examples of queries for rate
 					</script>
 				</section>
 
@@ -868,16 +870,15 @@ sum(irate(order_mgmt_duration_seconds_count{job=~".*"}[1m]))
 				</script>
 			</section -->
 
-				<section data-markdown>
+				<!-- section data-markdown>
 					<script type="text/template">
 					### P<span style="text-transform: lowercase;">rom</span>QL
 <pre><code class="yaml" data-trim="" width="100%">
 order_mgmt_duration_seconds_sum{job=~".*"} or
 order_mgmt_database_duration_seconds_sum{job=~".*"} or
-order_mgmt_audit_duration_seconds_sum{job=~".*"}
-</code></pre>
+order_mgmt_audit_duration_seconds_sum{job=~".*"}</code></pre>
 				</script>
-				</section>
+			</section -->
 
 				<!-- section data-markdown>
 					<script type="text/template">
@@ -900,7 +901,7 @@ order_mgmt_audit_duration_seconds_sum{job=~".*"}
 					<h3>Summary</h3>
 					<ul>
 						<li>Monitoring saves your time</li>
-						<li>Checking logs <b>Kibana</b> vs <b>Grafana</b> is like debuging vs having tests</li>
+						<li>Checking logs == debuging vs having tests</li>
 						<li>Logging -&gt; high TCO</li>
 					</ul>
 				</section>
@@ -946,35 +947,35 @@ order_mgmt_audit_duration_seconds_sum{job=~".*"}
 
 				<section data-markdown>
 					<script type="text/template">
-						### Prometheus - Push model
+### Prometheus - Push model
 
-						- See: https://prometheus.io/docs/instrumenting/pushing/
+- See: https://prometheus.io/docs/instrumenting/pushing/
 
-						Good for short living jobs in your cluster.
+Good for short living jobs in your cluster.
 					</script>
 				</section>
 
 				<section data-markdown>
 					<script type="text/template">
-						### Designing metric names
+### Designing metric names
 
-						Which one is better?
+Which one is better?
 
-						- request_duration{app=my_app}
-						- my_app_request_duration
+- request_duration{app=my_app}
+- my_app_request_duration
 
-						<small>see documentation on best practises for <a href="https://prometheus.io/docs/practices/naming/">metric naming</a> and <a href="https://prometheus.io/docs/practices/instrumentation/#instrumentation">instrumentation</a></small>
+<p><small>see documentation on best practises for <a href="https://prometheus.io/docs/practices/naming/">metric naming</a> and <a href="https://prometheus.io/docs/practices/instrumentation/#instrumentation">instrumentation</a></small></p>
 					</script>
 				</section>
 
 				<section data-markdown>
 					<script type="text/template">
-						### Designing metric names
+### Designing metric names
 
-						Which one is better?
+Which one is better?
 
-						- order_mgmt_db_duration_seconds_sum
-						- order_mgmt_duration_seconds_sum{dep_name='db'}
+- order_mgmt_db_duration_seconds_sum
+- order_mgmt_duration_seconds_sum{dep_name='db'}
 					</script>
 				</section>
 
