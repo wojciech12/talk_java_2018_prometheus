@@ -12,7 +12,7 @@ Slides and live-coding demo from `Warsaw Java User Group Meetup <https://www.mee
 
 The live-demo consists of a Spring 1.5 application and configured prometheus with grafana and alertmanager. To make it event easier, a request generator will let you stress the monitored endpoints with random errors and latency injections. Check the READMEs.
 
-If you find slides helpful, please give a LIKE to `my Linkedin post <https://www.linkedin.com/feed/update/urn:li:activity:6457577787816497152>`_.
+If you find slides helpful, please give a LIKE to `my Linkedin post <https://www.linkedin.com/feed/update/urn:li:activity:6457577787816497152>`_ about this talk.
 
 Related Work
 ============
