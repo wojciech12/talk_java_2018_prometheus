@@ -1,0 +1,1043 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>WJUG: RED with Java and Prometheus/Alertmanager/Grafana</title>
+
+		<!-- bootstrap -->
+		<link rel="stylesheet" href="ext/bootstrap-4.0.0-beta/bootstrap.min.css">
+
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/white.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<!-- link rel="stylesheet" href="lib/css/zenburn.css" -->
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<style>
+			.reveal section img {
+				background-color:white;
+				border:0;
+				box-shadow: 0 0 0 0;
+			}
+		</style>
+	</head>
+	<body>
+
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<h3 style="text-transform: none !important;">How to monitor your micro-service with Prometheus?<br />How to design the metrics?</h1>
+
+					<img src="img/logo_prometheus.png" width="40%" />
+
+					<h6><small>Wojciech Barczyński - SMACC.io | 17 October 2018</small></h6>
+				</section>
+
+				<section>
+					<h3>About me</h3>
+
+					<p>
+					<ul>
+						<li>Lead Software Developer - SMACC (FinTech/AI)</li>
+						<li>Before:<br />System Engineer i Developer Lyke</li>
+						<li>Before:<br />1000+ nodes, 20 data centers with Openstack</li>
+						<!-- li>System Engineer background</li -->
+						<li>Point of view:<br />Startups, fast-moving environment</li>
+						<!-- li>Hobby:<br />teaching software engineering</li -->
+					</ul></p>
+				</section>
+
+				<section>
+					<h3>Why?</h3>
+					<h4>Monolit ;) </h4>
+					<img src="img/rubber_duck_monolit.jpg" width="70%">
+				</section>
+
+				<section>
+					<h3>Why?</h3>
+					<h4>Microservices ;) </h4>
+					<img src="img/rubber_duck_microservices.jpg" width="70%">
+				</section>
+
+				<section>
+					<h4>Observability</h4>
+					<ul>
+					<li>Monitoring</li>
+					<li>Logging</li>
+					<li>Tracing</li>
+				</ul>
+				</section>
+
+				<!-- section>
+					<h4>Observability</h4>
+					<table class="table">
+				     <thead>
+				       <tr>
+				         <th></th>
+				         <th>Monitoring</th>
+				         <th>Logging</th>
+								 <th>Tracing</th>
+				       </tr>
+				     </thead>
+				     <tbody>
+							 <tr>
+								 <td>Setup</td>
+								 <td>Easy</td>
+								 <td>Diff</td>
+								 <td>Diff</td>
+							 </tr>
+				       <tr>
+				         <td>TCO</td>
+				         <td>Low</td>
+				         <td>Very High</td>
+								 <td>High</td>
+				       </tr>
+				       <tr>
+				         <td>Debuging</td>
+				         <td>Low</td>
+				         <td>High</td>
+								 <td>High</td>
+				       </tr>
+				       <tr>
+				         <td>Detecting</td>
+				         <td>High</td>
+				         <td>Low</td>
+								 <td>Low</td>
+				       </tr>
+				     </tbody>
+				   </table>
+				</section -->
+
+
+				<section>
+					<h4>Observability</h4>
+<img src="img/observability_capex_vs_opex_from_golang_prod_blog.png" width="80%" />
+
+<small><a href="https://peter.bourgon.org/go-for-industrial-programming/">Go for Industrial Programming by Peter Bourgon</a></small>
+</section>
+
+				<section>
+					<h3>Not a silver-bullet</h3>
+					<p>but:</p>
+					<ul>
+						<li>Easy to setup</li>
+						<li>Immediately value</li>
+					</ul>
+					<p>Suprisengly: the last one implemented</p>
+				</section>
+
+				<section>
+					<h3>Centralized Logging</h3>
+					<ul>
+						<li>Usually much too late</li>
+						<li>Post-mortem</li>
+						<li>Hard to find the needle</li>
+						<li>Like a debugging vs testing</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>Monitoring</h3>
+					<ul>
+						<li>Numbers</li>
+						<li>Trends</li>
+						<li>Dependencies</li>
+						<li>+ Actions</li>
+					</ul>
+				</section>
+
+				<section>
+					<h4>Metric</h4>
+
+					<table class="table">
+						 <thead>
+							 <tr>
+								 <th style="text-align: center;">Name</th>
+								 <th style="text-align: center;">Label</th>
+								 <th style="text-align: center;">Value</th>
+							 </tr>
+						 </thead>
+						 <tbody>
+							 <tr class="success">
+								 <td>traefik_requests_total</td>
+								 <td>code="200", method="GET"</td>
+								 <td>3001</td>
+							 </tr>
+						 </tbody>
+					</table>
+				</section>
+
+				<section>
+					<h3>Monitoring</h3>
+					<img src="img/kubernetes-grafana-live-demo.png" width="90%"  />
+					<p><small>Demo app</small></p>
+				</section>
+
+				<section>
+					<h3>Monitoring</h3>
+					<img src="img/kubernetes-grafana-cluster-1024x503.png" width="80%" />
+
+					<p><small>Example from <a href="https://blog.couchbase.com/wp-content/original-assets/december-2016/kubernetes-monitoring-with-heapster-influxdb-and-grafana/">couchbase blog</a></small></p>
+				</section>
+
+				<section>
+					<h4>How to find the right metric?</h4>
+					<!-- h5>
+						<ul>
+							<li>USE</li>
+							<li>RED</li>
+						</ul>
+					</h5 -->
+				</section>
+
+
+				<section>
+					<h4>How to find the right metric?</h4>
+					<h5>
+						<ul>
+							<li>USE</li>
+							<li>RED</li>
+						</ul>
+					</h5>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+					## USE
+
+<table class="table">
+		 <tbody>
+			 <tr>
+				 <td>**U**tilization</td>
+				 <td>the average time that the resource was busy servicing work</td>
+			 </tr>
+			 <tr>
+				 <td>**S**aturation</td>
+				 <td>extra work which it can't service, often queued</td>
+			 </tr>
+			 <tr>
+				 <td>**E**rrors</td>
+				 <td>the count of error events</td>
+			 </tr>
+</tbody>
+					 </table>
+
+<small>Documented and Promoted by <a href="http://www.brendangregg.com/usemethod.html">Berdan Gregg</a></small>
+<!-- Famous Shouting in the Datacenter - https://www.youtube.com/watch?v=tDacjrSCeq4 -->
+					</script>
+				</section>
+
+		<section data-markdown>
+			<script type="text/template">
+				## USE
+
+- **U**tilization: as a percent over a time interval: "one disk is running at 90% utilization".
+- **S**aturation:
+- **E**rrors:
+					</script>
+				</section>
+		<section data-markdown>
+			<script type="text/template">
+				## USE
+
+- **Utilization**:
+- **Saturation**: as a queue length. eg, "the CPUs have an average run queue length of four".
+- **Errors**:
+					</script>
+				</section>
+
+		<section data-markdown>
+			<script type="text/template">
+				## USE
+
+- **utilization**:
+- **saturation**:
+- **errors**: scalar counts. eg, "this network interface drops packages".
+					</script>
+				</section>
+
+		<section data-markdown>
+			<script type="text/template">
+				## USE
+
+- **traditionaly** more instance oriented
+- still useful in the microservices world
+					</script>
+				</section>
+
+				<section data-markdown><!-- workload -->
+					<script type="text/template">
+						## RED
+
+						<table class="table">
+							 <tbody>
+								 <tr>
+									 <td>**R**ate</td>
+									 <td>How busy is your service?</td>
+								 </tr>
+								 <tr>
+									 <td>**E**rror</td>
+									 <td>Errors</td>
+								 </tr>
+								 <tr>
+									 <td>**D**uration </td>
+									 <td>What is the latency of my service?</td>
+								 </tr>
+							 </tbody>
+						 </table>
+<center><small> <a href="https://twitter.com/i/web/status/852341680946544640">Tom Wilkie's guideline for instrumenting applications</a>.</small></center>
+					</script>
+				</section>
+
+				<section data-markdown><!-- workload -->
+					<script type="text/template">
+						## RED
+
+						- **Rate** - how many request per seconds handled
+						- **Error**
+						- **Duration** (distribution)
+					</script>
+				</section>
+
+				<section data-markdown><!-- workload -->
+					<script type="text/template">
+						## RED
+
+						- **Rate**
+						- **Error** - how many request per seconds handled we failed
+						- **Duration**
+					</script>
+				</section>
+
+				<section data-markdown><!-- workload -->
+					<script type="text/template">
+						## RED
+
+						- **Rate**
+						- **Error**
+						- **Duration** - how long the requests took
+					</script>
+				</section>
+
+
+				<section data-markdown>
+					<script type="text/template">
+						## RED
+
+						- Follow Four Golden Signals by Google SREs [1]
+						- Focus on what matters for end-users
+
+<center><small>[1] Latency, Traffic, Errors, Saturation (<a href="https://landing.google.com/sre/book/chapters/monitoring-distributed-systems.html">src</a>)</small></center>
+					</script>
+				</section>
+
+				<section data-markdown><!-- workload -->
+					<script type="text/template">
+						## RED
+
+Not recommended for:
+
+- batch-oriented
+- streaming services
+ 					</script>
+ 				</section>
+
+				<section>
+					<h3>Prometheus</h3>
+						<img src="img/logo_prometheus.png" width="40%" />
+						<img src="img/logo_grafana.png" width="30%" />
+					</h3>
+				</section>
+
+				<section>
+					<h3>What prometheus is?</h3>
+					<ul>
+						<li>Aggregation of time-series data</li>
+						<li>Not an event-based system</li>
+					</ul>
+					</h3>
+				</section>
+
+				<section>
+					<h3>Prometheus stack</h3>
+					<ul>
+						<li>Prometheus - collect</li>
+						<li>Alertmanager - alerts</li>
+						<li>Grafana - visualize</li>
+					</ul>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+					## Prometheus
+
+					- Wide support for languages
+					- Metrics collected over HTTP <a href="http://127.0.0.1:8080/metrics">*metrics/*</a>
+					- Pull model (see *scrape time*), push-mode possible
+					- integration with k8s
+					- PromQL
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template" width="100%">
+### Metrics in plain text
+
+	# HELP order_mgmt_audit_duration_seconds Multiprocess metric
+	# TYPE order_mgmt_audit_duration_seconds summary
+	order_mgmt_audit_duration_seconds_count{status_code="200"} 41.0
+	order_mgmt_audit_duration_seconds_sum{status_code="200"} 27.445735454559326
+	order_mgmt_audit_duration_seconds_count{status_code="500"} 1.0
+	order_mgmt_audit_duration_seconds_sum{status_code="500"} 0.7166361808776855
+	# HELP order_mgmt_duration_seconds Multiprocess metric
+	# TYPE order_mgmt_duration_seconds summary
+	order_mgmt_duration_seconds_count{method="GET",path="/complex",status_code="200"} 41.0
+	order_mgmt_duration_seconds_sum{method="GET",path="/complex",status_code="200"} 47.53411388397217
+	order_mgmt_duration_seconds_count{method="GET",path="/",status_code="404"} 1.0
+	order_mgmt_duration_seconds_sum{method="GET",path="/",status_code="404"} 0.029236555099487305
+	order_mgmt_duration_seconds_count{method="GET",path="/complex",status_code="503"} 1.0
+	order_mgmt_duration_seconds_sum{method="GET",path="/complex",status_code="503"} 1.6936163902282715
+
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+### Metrics in plain text
+
+	# HELP go_gc_duration_seconds A summary of the GC invocation durations.
+	# TYPE go_gc_duration_seconds summary
+	go_gc_duration_seconds{quantile="0"} 9.01e-05
+	go_gc_duration_seconds{quantile="0.25"} 0.000141101
+	go_gc_duration_seconds{quantile="0.5"} 0.000178902
+	go_gc_duration_seconds{quantile="0.75"} 0.000226903
+	go_gc_duration_seconds{quantile="1"} 0.006099658
+	go_gc_duration_seconds_sum 18.749046756
+	go_gc_duration_seconds_count 89273
+
+				</script>
+			</section>
+
+				<section data-markdown>
+					<script type="text/template">
+## Exporters
+
+- Mongodb
+- Mysql
+- Postgresql
+- rabbitmq
+- ...
+- also Blackbox exporter
+
+<p><small>examples: <a href="https://github.com/skarab7/kubernetes-memcached">memcached</a>, [psql](https://github.com/justwatchcom/sql_exporter)</small></p>
+				</script>
+			</section>
+
+
+				<section>
+					<h3>Cloud-native projects integration</h3>
+					<img src="img/traefik_architecture.svg" width="80%"/>
+					<small>  - --web.metrics.prometheus</small>
+				</section>
+
+
+				<section data-markdown>
+					<script type="text/template">
+### Prometheus P<span style="text-transform: lowercase;">rom</span>QL
+
+	# working with historams:
+
+	histogram_quantile(0.9,
+	  rate(http_req_duration_seconds_bucket[10m]))
+
+	# rates:
+
+		rate(http_requests_total{job="api-server"}[5m])
+		irate(http_requests_total{job="api-server"}[5m])
+
+	# more complex:
+
+		redict_linear()
+		holt_winters()
+					</script>
+					<!-- https://prometheus.io/docs/prometheus/latest/querying/functions/#holt_winters() -->
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+### Prometheus P<span style="text-transform: lowercase;">rom</span>QL
+
+Alarming:
+
+<pre><code>ALERT ProductionAppServiceInstanceDown
+   IF up { environment = "production", app =~ ".+"} == 0
+   FOR 4m
+   ANNOTATIONS {
+        summary = "Instance of {{$labels.app}} is down",
+        description = " Instance  {{$labels.instance}} of app {{$labels.app}} has been down for more than 4 minutes"
+   }</code></pre>
+
+					</script>
+					<!-- "https://pracucci.com/prometheus-understanding-the-delays-on-alerting.html -->
+					<!-- https://prometheus.io/docs/prometheus/latest/querying/functions/#holt_winters() -->
+				</section>
+
+				<!--
+				-->
+				<section data-markdown>
+					<script type="text/template">
+### Metrics
+
+- Counter - just up
+- Gauge - up/down
+- Histogram
+- Summary
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+					#### Histogram
+					<code>traefik_duration_seconds_bucket<br />{method="GET,code="200"}</code>
+
+					<table class="table">
+						 <tbody>
+							<tr>
+								 <td>{le="0.1"}</td>
+								 <td>2229</td>
+							</tr>
+
+							<tr>
+								 <td>{le="0.3"}</td>
+								 <td>107</td>
+							</tr>
+							<tr>
+								 <td>{le="1.2"}</td>
+								 <td>100</td>
+							 </tr>
+
+							<tr>
+								 <td>{le="5"}</td>
+								 <td>4</td>
+							</tr>
+							<tr>
+								 <td>{le="+Inf"}</td>
+								 <td>2</td>
+							</tr>
+							<tr>
+								<td>_sum</td>
+								<td></td>
+							</tr>
+							<tr>
+								<td>_count</td>
+								<td>2342</td>
+							</tr>
+						 </tbody>
+					</table>
+
+					</script>
+				</section>
+
+				<!-- A Summary similar to histogram_quantile() -->
+				<section data-markdown>
+					<script type="text/template">
+					#### Summary
+					<code>http_request_duration_seconds</code>
+
+					<table class="table">
+						 <tbody>
+							<tr>
+								 <td>{quantile="0.5"}</td>
+								 <td>4</td>
+							</tr>
+							<tr>
+								 <td>{quantile="0.9"}</td>
+								 <td>5</td>
+							</tr>
+							<tr>
+								 <td>http_request_duration_seconds_sum</td>
+								 <td>9</td>
+							</tr>
+							<tr>
+								 <td>http_request_duration_seconds_count</td>
+								 <td>3</td>
+							</tr>
+						 </tbody>
+					</table>
+					</script>
+				</section>
+
+				<!--
+				https://godoc.org/github.com/prometheus/client_golang/prometheus#Histogram
+				https://godoc.org/github.com/prometheus/client_golang/prometheus#Summary
+				https://github.com/prometheus/client_java/blob/master/simpleclient/src/main/java/io/prometheus/client/Summary.java#L61-L63
+				https://povilasv.me/prometheus-tracking-request-duration/
+				-->
+				<section data-markdown>
+					<script type="text/template">
+### Histogram / Summary:
+
+- Latency of services
+- Request or Request size
+
+Histograms recommended
+					</script>
+				</section>
+
+				<!--
+				rate(order_mgmt_audit_duration_seconds_sum[5m])/ rate(order_mgmt_audit_duration_seconds_count[5m])
+				-->
+				<!--
+				http://127.0.0.1:9090/graph?g0.range_input=1h&g0.stacked=1&g0.expr=rate(order_mgmt_audit_duration_seconds_sum%5B5m%5D)%2F%20rate(order_mgmt_audit_duration_seconds_count%5B5m%5D)&g0.tab=0
+				-->
+				<section data-markdown>
+					<script type="text/template">
+### RED
+
+Metric + PromQL:
+
+	sum(irate(order_mgmt_duration_seconds_count
+	{job=~".*"}[1m])) by (status_code)
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+### Metric and Label Naming
+
+Best practises on <a target="_blank" href="https://prometheus.io/docs/practices/naming/">metric names</a>:
+
+- service name is your prefix `user_`
+- state the bae unit `_seconds` and `_bytes`
+					</script>
+				</section>
+
+
+				<!-- section data-markdown>
+					<script type="text/template">
+					### Metrics
+
+					Histogram / Summary:
+					- sum <code>_sum</code>
+					- count <code>_count</code>
+					- count / sum per bucket
+					</script>
+				</section -->
+
+				<section>
+					<h3>Prometheus + Java</h3>
+						<img src="img/logo_prometheus.png" width="30%" />
+						<img src="img/logo_grafana.png" width="20%" />
+						<img src="img/logo_java.png" width="20%" />
+					</h3>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+### Java client
+
+- <a target="_blank" href="https://github.com/prometheus/client_java">client_python</a>
+- <a target="_blank" href="https://github.com/prometheus/client_java#counter">Counter</a>
+- <a target="_blank" href="https://github.com/prometheus/client_java#gauge">Gauge</a>
+- <a target="_blank" href="https://github.com/prometheus/client_java#summary">Summary</a>
+- <a target="_blank" href="https://github.com/prometheus/client_java#histogram">Histogram</a>
+					</script>
+				</section>
+
+								<section data-markdown>
+									<script type="text/template">
+### Java
+
+- Sprint 1.5 - demo
+- Sprint 2.x - wrapper with <code>io.micrometer.core</code>
+- JMX exporter -<br />https://github.com/prometheus/jmx_exporter
+									</script>
+								</section>
+
+				<section data-markdown>
+					<script type="text/template">
+#### Demo: Simple REST service
+
+<pre><code>
+     -----------         ---------------
+    |    App    | ----->| Audit Service |
+    | OrderMgmt |       |               |
+     -----------         ---------------
+        |
+        |          ---------------
+         -------->|   Database    |
+                   ---------------</code></pre>
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+					#### Demo:
+
+- <a target="_blank" href="http://127.0.0.1:8080/metrics/">http://127.0.0.1:8080</a> - service
+- <a target="_blank" href="http://127.0.0.1:8080/metrics/">http://127.0.0.1:8080/metrics/</a>
+- <a target="_blank" href="http://127.0.0.1:9090">http://127.0.0.1:9090</a> - prometheus
+- <a target="_blank" href="http://127.0.0.1:3000">http://127.0.0.1:3000</a> - grafana
+- <a target="_blank" href="http://127.0.0.1:9093">http://127.0.0.1:9093</a> - alertmanager
+					</script>
+				</section>
+
+
+				<section data-markdown>
+					<script type="text/template">
+#### Demo
+
+<pre><code class="bash" data-trim="" width="100%">☁  demo ⚡ make start
+
+☁  demo ⚡ docker ps
+CONTAINER ID        IMAGE                      PORTS                    NAMES
+5f824d1bc789        grafana/grafana:5.2.2      0.0.0.0:3000->3000/tcp   java-prom_grafana_1
+d681a414a8b6        prom/prometheus:v2.1.0     0.0.0.0:9090->9090/tcp   java-prom_prometheus_1
+ea0d9233e159        prom/alertmanager:v0.15.1  0.0.0.0:9093->9093/tcp   java-prom_alertmanager_1
+732c59fb3753        java-prom_order-manager    0.0.0.0:8080->8080/tcp   java-prom_order-manager_1
+</code></pre>
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+<h3>Demo: generate calls</h3>
+<pre><code class="bash" data-trim="" width="100%">
+☁  demo	 ⚡ make srv_wrk_random
+</code></pre>
+
+<p><small>With error injection</small></p>
+					</script>
+				</section>
+
+<section data-background="img/demo/metrics.png" data-background-repeat="" data-background-size="100%">
+</section>
+
+				<section>
+					<h5>Grafana</h5>
+					<img src="img/kubernetes-grafana-live-demo.png" width="90%"  />
+				</section>
+
+				<section>
+					<h5>Prometheus </h5>
+					<img src="img/demo/prometheus_1.png" width="90%"  />
+				</section>
+
+				<section>
+					<h5>Prometheus </h5>
+					<img src="img/demo/prometheus_2.png" width="90%"  />
+				</section>
+
+				<section>
+					<h5>Prometheus </h5>
+					<img src="img/demo/prometheus_3_alerts.png" width="90%"  />
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+<h3>Kill the service</h3>
+<pre><code class="bash" data-trim="" width="100%">
+☁  demo ⚡ docker stop java-prom_order-manager_1
+</code></pre>
+					</script>
+				</section>
+
+				<section>
+					<h5>Prometheus</h5>
+					<img src="img/demo/prometheus_4_alerts.png" width="90%"  />
+				</section>
+
+				<section>
+					<h5>Prometheus</h5>
+					<img src="img/demo/prometheus_5_alerts.png" width="90%"  />
+				</section>
+
+				<section>
+					<h5>Alertmanager</h5>
+					<img src="img/demo/alertmanager_1.png"  width="90%"  />
+				</section>
+
+				<section>
+					<h5>Grafana</h5>
+					<img src="img/demo/grafana_1.png"  width="90%"  />
+				</section>
+
+				<section>
+					<h5>Grafana</h5>
+					<img src="img/demo/grafana_2.png"  width="90%"  />
+				</section>
+
+				<section>
+					<h5>Github</h5>
+					<img src="img/demo/github.png"  width="90%"  />
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+### Demo: Java Code
+
+- Metric Definition
+					</script>
+				</section>
+
+				<!-- section data-markdown>
+					<script type="text/template">
+					#### Demo: Simulating Calls
+
+<pre><code class="bash" data-trim="" width="100%">make docker_build
+make docker_run</code></pre>
+					</script>
+				</section -->
+
+				<!-- section data-markdown>
+					<script type="text/template">
+					#### Demo: Simulating Calls
+
+<pre><code class="bash" data-trim="" width="100%">curl 127.0.0.1:8080/hello
+curl 127.0.0.1:8080/world
+curl 127.0.0.1:8080/complex</code></pre>
+					</script>
+				</section -->
+
+				<!-- section data-markdown>
+					<script type="text/template">
+					#### Demo: Simulating Calls
+
+<pre><code class="bash" data-trim="" width="100%">
+curl 127.0.0.1:8080/complex?is_srv_error=True
+curl 127.0.0.1:8080/complex?is_db_error=True
+curl 127.0.0.1:8080/complex?db_sleep=3&srv_sleep=2
+# load generator
+make srv_wrk_random</code></pre>
+					</script>
+				</section -->
+
+				<section data-markdown>
+					<script type="text/template">
+						### Demo: Prom Stack
+
+						- Prometheus dashboard and config
+						- AlertManager dashboard and config
+						- Simulate the successful and failed calls
+						- Simple Queries for rate
+					</script>
+				</section>
+
+				<!-- section data-markdown>
+					<script type="text/template">
+					### P<span style="text-transform: lowercase;">rom</span>QL
+<pre><code class="yaml" data-trim="" width="100%">
+sum(irate(order_mgmt_duration_seconds_count{job=~".*"}[1m]))
+   by (status_code)</pre></code>
+				</script>
+			</section -->
+
+				<section data-markdown>
+					<script type="text/template">
+					### P<span style="text-transform: lowercase;">rom</span>QL
+<pre><code class="yaml" data-trim="" width="100%">
+order_mgmt_duration_seconds_sum{job=~".*"} or
+order_mgmt_database_duration_seconds_sum{job=~".*"} or
+order_mgmt_audit_duration_seconds_sum{job=~".*"}
+</code></pre>
+				</script>
+				</section>
+
+				<!-- section data-markdown>
+					<script type="text/template">
+					### Next steps
+
+					- Extend the sample application with OpenZipkin
+					- In daily work, evaluating new: <a>linkerd.io</a>, <a>istio.io</a>, ...
+					</script>
+				</section -->
+
+				<section>
+					<h3>Best practises</h3>
+					<ul>
+						<li>Start simple (up/down), later add more complex rules</li>
+						<li>Sum over Summaries with Q leads to incorrect results, see <a target="_blank" href="https://prometheus.io/docs/practices/histograms/">prom docs</a></li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>Summary</h3>
+					<ul>
+						<li>Monitoring saves your time</li>
+						<li>Checking logs <b>Kibana</b> vs <b>Grafana</b> is like debuging vs having tests</li>
+						<li>Logging -&gt; high TCO</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>Summary</h3>
+					<img src="img/observability.svg" width="90%">
+				</section>
+
+			<section data-background="img/smacc_header_IT_source.jpg" data-background-repeat="" data-background-size="100%" data-background-position="bottom" style="position: relative; top:0">
+				<h1>Thank you</h1>
+			</section>
+
+			<section data-background="img/smacc_header_IT_source.jpg" data-background-repeat="" data-background-size="100%" data-background-position="bottom"
+			style="position: relative; top:0">
+				<h4>Questions?</h4>
+				<p>ps. We are hiring.</p><!-- Developers, Frontend, System Engineers -->
+			</section>
+
+			<section>
+				<img src="img/logo_smacc.png" width="40%" />
+				<img src="img/logo_go.png" width="25%" />
+				<img src="img/logo_python.png" width="25%" />
+
+				<img src="img/logo_pytorch.png" width="20%" />
+				<img src="img/logo_tensorflow.png" width="25%" />
+				<img src="img/logo_kubernetes.svg" width="10%" />
+				<img src="img/logo_openapi.png" width="10%" />
+
+				<img src="img/logo_aws.png" width="20%" />
+				<img src="img/logo_azure.png" width="15%" />
+				<img src="img/logo_lambda.png" width="15%" />
+
+				<img src="img/smacc_lets_do_this.png" width="25%" />
+			</section>
+
+			<!--
+				BACKUP SLIDES
+			-->
+			<section data-background="img/smacc_header_IT_source.jpg" data-background-repeat="" data-background-size="100%" data-background-position="bottom" style="position: relative; top:0">
+				<h1>Backup Slides</h1>
+			</section>
+
+				<section>
+					<h5>Promethus - labels in alert rules</h5>
+
+The labels are propageted to alert rules:
+
+<pre><code>ALERT ProductionAppServiceInstanceDown
+   IF up { environment = "production", app =~ ".+"} == 0
+   FOR 4m
+   ANNOTATIONS {
+        summary = "Instance of {{$labels.app}} is down",
+        description = " Instance  {{$labels.instance}} of app {{$labels.app}} has been down for more than 4 minutes"
+   }</code></pre>
+   <small>see ../src/prometheus/etc/alert.rules</small>
+		 		</section>
+
+				<section>
+					<h5>AlertManger - labels in AlertManger</h5>
+<small>Call somebody if the label is <code>severity=page</code>:</small>
+<pre><code>---
+ group_by: [cluster]
+ # If an alert isn't caught by a route, send it to the pager.
+ receiver: team-pager
+ routes:
+  - match:
+      severity: page
+    receiver: team-pager
+
+receivers:
+- name: team-pager
+  opsgenie_configs:
+  - api_key: $API_KEY
+    teams: example_team</code></pre>
+   <small>see ../src/alertmanager/*.conf</small>
+</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						### Prometheus - Push model
+
+						- See: https://prometheus.io/docs/instrumenting/pushing/
+
+						Good for short living jobs in your cluster.
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						### Designing metric names
+
+						Which one is better?
+
+						- request_duration{app=my_app}
+						- my_app_request_duration
+
+						<small>see documentation on best practises for <a href="https://prometheus.io/docs/practices/naming/">metric naming</a> and <a href="https://prometheus.io/docs/practices/instrumentation/#instrumentation">instrumentation</a></small>
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						### Designing metric names
+
+						Which one is better?
+
+						- order_mgmt_db_duration_seconds_sum
+						- order_mgmt_duration_seconds_sum{dep_name='db'}
+					</script>
+				</section>
+
+			<section>
+				<h2>Prometheus + K8S = &lt;3</h2>
+				<h5>Labels are propagated from k8s to prometheus</h5>
+			</section>
+
+							<section>
+								<h5>Integration with Prometheus</h5>
+			<small><code>cat memcached-0-service.yaml</code></small><pre><code class="yaml" data-trim="" width="100%">---
+  apiVersion: v1
+  kind: Service
+  metadata:
+    name: memcached-0
+    labels:
+       app: memcached
+       kubernetes.io/name: "memcached"
+       role: shard-0
+     annotations:
+       prometheus.io/scrape: "true"
+       prometheus.io/scheme: "http"
+       prometheus.io/path: "metrics"
+       prometheus.io/port: "9150"
+   spec:
+     type: NodePort
+     ports:
+       - port: 11211
+         targetPort: 11211
+     selector:
+       app: memcached
+       role: shard-0</code></pre><small>https://github.com/skarab7/kubernetes-memcached</small>
+							</section>
+			</div>
+		</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>
