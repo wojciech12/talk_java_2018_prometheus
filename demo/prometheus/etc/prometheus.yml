@@ -30,6 +30,7 @@ scrape_configs:
 
     # metrics_path defaults to '/metrics'
     # scheme defaults to 'http'.
+    metrics_path: '/prometheus'
     static_configs:
       - targets: ['order-manager:8080']
         labels:
