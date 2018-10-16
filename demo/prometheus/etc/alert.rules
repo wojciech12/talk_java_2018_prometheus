@@ -1,0 +1,19 @@
+groups:
+- name: apps
+  rules:
+  - alert: ProductionInstanceDown
+    expr: up{env = 'production'}  == 0
+    for: 2m
+    labels:
+      severity: opsgenie
+    annotations:
+      summary: "Instance {{ $labels.instance }} of {{ $labels.app }} is down"
+      description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 2 minutes."
+  - alert: StagingAppServiceInstanceDown
+    expr: up{env = 'staging'} == 0
+    for: 5m
+    labels:
+      severity: email
+    annotations:
+      summary: "Instance {{ $labels.instance }} of {{ $labels.app }} is down"
+      description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes."
