@@ -1,0 +1,43 @@
+version: '3'
+services:
+  order-manager:
+    build:
+      context: .
+    ports:
+      - 8080:8080
+  prometheus:
+    image: prom/prometheus:v2.1.0
+    ports:
+      - 9090:9090
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/data/prometheus'
+      - '--web.enable-lifecycle'
+    volumes:
+      - ./prometheus/etc/:/etc/prometheus/
+      - ./prometheus/data/:/data/prometheus/
+    links:
+      - alertmanager:alertmanager
+      - order-manager:order-manager
+  alertmanager:
+    image: prom/alertmanager:v0.15.1
+    ports:
+      - 9093:9093
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.conf'
+    volumes:
+      - ./alertmanager/:/etc/alertmanager/
+    restart: always
+  grafana:
+    image: grafana/grafana:5.2.2
+    ports:
+      - 3000:3000
+    environment:
+      - "GF_SERVER_ROOT_URL=http://127.0.0.1"
+      - "GF_SECURITY_ADMIN_PASSWORD=secret"
+    links:
+      - prometheus:prometheus
+    volumes:
+      - ./grafana/data/:/var/lib/grafana
+      - ./grafana/etc/provisioning:/etc/grafana/provisioning/
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
