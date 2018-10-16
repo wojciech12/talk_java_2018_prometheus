@@ -781,7 +781,7 @@ ea0d9233e159        prom/alertmanager:v0.15.1  0.0.0.0:9093->9093/tcp   java-pro
 
 				<section>
 					<h5>Github</h5>
-					<img src="img/demo/github.png"  width="90%"  />
+					<img src="img/demo/github.png"  width="70%"  />
 				</section>
 
 				<section data-markdown>
@@ -883,7 +883,7 @@ order_mgmt_audit_duration_seconds_sum{job=~".*"}
 
 				<section>
 					<h3>Summary</h3>
-					<img src="img/observability.svg" width="90%">
+					<img src="img/observability.svg" width="80%">
 				</section>
 
 			<section data-background="img/smacc_header_IT_source.jpg" data-background-repeat="" data-background-size="100%" data-background-position="bottom" style="position: relative; top:0">
@@ -919,41 +919,6 @@ order_mgmt_audit_duration_seconds_sum{job=~".*"}
 			<section data-background="img/smacc_header_IT_source.jpg" data-background-repeat="" data-background-size="100%" data-background-position="bottom" style="position: relative; top:0">
 				<h1>Backup Slides</h1>
 			</section>
-
-				<section>
-					<h5>Promethus - labels in alert rules</h5>
-
-The labels are propageted to alert rules:
-
-<pre><code>ALERT ProductionAppServiceInstanceDown
-   IF up { environment = "production", app =~ ".+"} == 0
-   FOR 4m
-   ANNOTATIONS {
-        summary = "Instance of {{$labels.app}} is down",
-        description = " Instance  {{$labels.instance}} of app {{$labels.app}} has been down for more than 4 minutes"
-   }</code></pre>
-   <small>see ../src/prometheus/etc/alert.rules</small>
-		 		</section>
-
-				<section>
-					<h5>AlertManger - labels in AlertManger</h5>
-<small>Call somebody if the label is <code>severity=page</code>:</small>
-<pre><code>---
- group_by: [cluster]
- # If an alert isn't caught by a route, send it to the pager.
- receiver: team-pager
- routes:
-  - match:
-      severity: page
-    receiver: team-pager
-
-receivers:
-- name: team-pager
-  opsgenie_configs:
-  - api_key: $API_KEY
-    teams: example_team</code></pre>
-   <small>see ../src/alertmanager/*.conf</small>
-</section>
 
 				<section data-markdown>
 					<script type="text/template">
@@ -1022,6 +987,41 @@ receivers:
 			</div>
 		</div>
 		</div>
+
+		<section>
+			<h5>Promethus - labels in alert rules</h5>
+
+The labels are propageted to alert rules:
+
+<pre><code>ALERT ProductionAppServiceInstanceDown
+IF up { environment = "production", app =~ ".+"} == 0
+FOR 4m
+ANNOTATIONS {
+		summary = "Instance of {{$labels.app}} is down",
+		description = " Instance  {{$labels.instance}} of app {{$labels.app}} has been down for more than 4 minutes"
+}</code></pre>
+<small>see ../src/prometheus/etc/alert.rules</small>
+		</section>
+
+		<section>
+			<h5>AlertManger - labels in AlertManger</h5>
+<small>Call somebody if the label is <code>severity=page</code>:</small>
+<pre><code>---
+group_by: [cluster]
+# If an alert isn't caught by a route, send it to the pager.
+receiver: team-pager
+routes:
+- match:
+	severity: page
+receiver: team-pager
+
+receivers:
+- name: team-pager
+opsgenie_configs:
+- api_key: $API_KEY
+teams: example_team</code></pre>
+<small>see ../src/alertmanager/*.conf</small>
+</section>
 
 		<script src="lib/js/head.min.js"></script>
 		<script src="js/reveal.js"></script>
