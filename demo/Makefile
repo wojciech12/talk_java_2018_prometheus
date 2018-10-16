@@ -10,7 +10,7 @@ run:
 	gunicorn -c gunicorn_cfg.py --bind 0.0.0.0:8080 -w 1 wsgi:app
 
 start:
-	docker-compose -f docker-compose.yaml --project-name $(PROJECT_NAME) up -d
+	docker-compose -f docker-compose.yaml --project-name $(PROJECT_NAME) up --build -d
 
 stop:
 	docker-compose -f docker-compose.yaml --project-name $(PROJECT_NAME) stop
