@@ -1,4 +1,4 @@
-PROJECT_NAME=wjug-prom
+PROJECT_NAME=java-prom
 
 docker_build:
 	docker-compose -f docker-compose.yaml --project-name $(PROJECT_NAME) build && \
