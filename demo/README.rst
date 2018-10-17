@@ -3,6 +3,8 @@
 RED in Java
 =============
 
+The demo consists of a Spring 1.5 application and configured prometheus with grafana and alertmanager. To make it event easier, a request generator will let you stress the monitored endpoints with random errors and latency injections.
+
 How-to
 ======
 
