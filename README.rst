@@ -7,8 +7,8 @@ How to monitor your micro-service with Prometheus? How to design metrics, what i
 Slides and live-coding demo from `Warsaw Java User Group Meetup <https://www.meetup.com/Warszawa-JUG/events/255428108/>`_ in Warsaw:
 
 - `in pdf <slides/index.pdf>`_ (source: `slides/ <slides/>`_)
-- `LinkedIN Slideshare <https://www.slideshare.net/WojciechBarczyski/monitor-your-java-application-with-prometheus-stack/>`_
-- src/ - an example REST application monitored with Prometheus, Alertmanager, and Grafana. Check `demo/README <demo/README.rst>`_.
+- `LinkedIN slideshare <https://www.slideshare.net/WojciechBarczyski/monitor-your-java-application-with-prometheus-stack/>`_
+- `demo/ <demo/>`_ - an example REST application monitored with Prometheus, Alertmanager, and Grafana. Check `demo/README <demo/README.rst>`_.
 
 If you find slides helpful, please give a LIKE to `my Linkedin post <https://www.linkedin.com/feed/update/urn:li:activity:6457577787816497152>`_ about this talk.
 
