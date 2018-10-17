@@ -8,7 +8,7 @@ Slides and live-coding demo from `Warsaw Java User Group Meetup <https://www.mee
 
 - `in pdf <slides/index.pdf>`_ (source: `slides/ <slides/>`_)
 - `LinkedIN Slideshare <https://www.slideshare.net/WojciechBarczyski/monitor-your-java-application-with-prometheus-stack/>`_
-- src/ - an example REST application monitored with Prometheus, Alertmanager, and Grafana. Check `demo/README.rst <demo/README.rst>`_.
+- src/ - an example REST application monitored with Prometheus, Alertmanager, and Grafana. Check `demo/README <demo/README.rst>`_.
 
 The demo consists of a Spring 1.5 application and configured prometheus with grafana and alertmanager. To make it event easier, a request generator will let you stress the monitored endpoints with random errors and latency injections. Check the READMEs.
 
