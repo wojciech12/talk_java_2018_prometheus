@@ -2,7 +2,7 @@
 RED metrics for a REST service with Prometheus, Grafana, and AlertManager 
 =========================================================================
 
-How to monitor your micro-service with Prometheus? How to design metrics, what is USE and RED? Metrics for a REST service with Prometheus, AlertManager, and Grafana.
+My goal is to convince you to start your projects with monitoring instead of jumping on centralized logging. To help you get started, I cover two most popular approaches in defining metrics - USE and RED. Based on my experience, I recommend you Prometheus and tell you why. The last part is a live demo of a java application with preconfigured Prometheus, Alertmanger, and Grafana. Naturally, the demo is on github, and works out-of-the-box with a single command. So, you can continue learning and experiencing on your own. 
 
 Slides and live-coding demo from `Warsaw Java User Group Meetup <https://www.meetup.com/Warszawa-JUG/events/255428108/>`_ in Warsaw:
 
