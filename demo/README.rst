@@ -1,6 +1,6 @@
 
 =============
-RED in Python
+RED in Java
 =============
 
 How-to
