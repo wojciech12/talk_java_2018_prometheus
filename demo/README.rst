@@ -49,7 +49,7 @@ Docker-compose mounts all configuration from the git repo. You can change it loc
 
    ::
 
-     docker restart talk-wrocpy-prom-flask_grafana_1
+     docker restart java-prom_grafana_1
 
 Development
 ===========
