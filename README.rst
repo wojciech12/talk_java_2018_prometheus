@@ -10,7 +10,7 @@ Slides and live-coding demo from `Warsaw Java User Group Meetup <https://www.mee
 - `LinkedIN slideshare <https://www.slideshare.net/WojciechBarczyski/monitor-your-java-application-with-prometheus-stack/>`_
 - `demo/ <demo/>`_ - an example REST application monitored with Prometheus, Alertmanager, and Grafana. Check `demo/README <demo/README.rst>`_.
 
-If you find slides helpful, please give a LIKE to `my Linkedin post <https://www.linkedin.com/feed/update/urn:li:activity:6457577787816497152>`_ about this talk.
+If you find slides helpful, please give a LIKE to `my Linkedin post <https://www.linkedin.com/feed/update/urn:li:activity:6457577787816497152>`_ about the talk or a *STAR* to `this github repo <https://github.com/wojciech12/talk_java_2018_prometheus>`_.
 
 Related Work
 ============
