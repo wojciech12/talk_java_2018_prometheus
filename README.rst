@@ -12,6 +12,8 @@ Slides and live-coding demo from `Warsaw Java User Group Meetup <https://www.mee
 
 If you find slides helpful, please give a LIKE to `my Linkedin post <https://www.linkedin.com/feed/update/urn:li:activity:6457577787816497152>`_ about the talk or a *STAR* to `this github repo <https://github.com/wojciech12/talk_java_2018_prometheus>`_.
 
+The demo uses Spring 1.x, if you work with Spring 2.x, check ` Jedrzej Serwa project  <https://github.com/jedrzejserwa/micrometer-spring-boot-sandbox>`_.
+
 Related Work
 ============
 
