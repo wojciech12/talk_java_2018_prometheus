@@ -4,11 +4,6 @@ docker_build:
 	docker-compose -f docker-compose.yaml --project-name $(PROJECT_NAME) build && \
 	docker tag ${PROJECT_NAME}_order-manager wojciech12/$(PROJECT_NAME)
 
-run:
-	rm -rf multiproc-tmp && \
-	mkdir multiproc-tmp && \
-	gunicorn -c gunicorn_cfg.py --bind 0.0.0.0:8080 -w 1 wsgi:app
-
 start:
 	docker-compose -f docker-compose.yaml --project-name $(PROJECT_NAME) up --build -d
 
@@ -33,3 +28,9 @@ srv_random_trafic_complex_failed_third_party:
 
 srv_wrk_random:
 	 wrk -t8 -c12 -d360s -s tools/load_generator/mixed.lua http://127.0.0.1:8080
+
+# clean prometheus and grafana data
+# mounted to host filesystem
+clean:
+	rm -rf prometheus/data/ && \
+	rm -rf grafana/data && mkdir grafana/data && touch grafana/data/.gitkeep
